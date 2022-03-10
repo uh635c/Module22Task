@@ -3,6 +3,7 @@ package com.uh635c.task22.repository;
 import com.uh635c.task22.model.Post;
 import com.uh635c.task22.model.PostStatus;
 import com.uh635c.task22.model.Tag;
+import com.uh635c.task22.model.Writer;
 
 
 import java.sql.*;
@@ -56,6 +57,10 @@ public class PostRepositoryImpl implements PostRepository {
             resultSet.next();
             post.setId(resultSet.getLong("post_id"));
             post.setContent(resultSet.getString("content"));
+
+            Writer writer = new Writer();
+            writer.setId(resultSet.getLong("writer_id"));
+            post.setWriter(writer);
 
             if (resultSet.getString("status").equals("ACTIVE")) {
                 post.setStatus(PostStatus.ACTIVE);

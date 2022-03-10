@@ -56,7 +56,7 @@ public class Post {
                 ", content='" + content + '\'' +
                 ", tags=" + tags +
                 ", status=" + status +
-                ", writer=" + writer +
+                ", writer_id=" + writer.getId() +
                 '}';
     }
 }

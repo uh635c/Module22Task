@@ -1,32 +1,45 @@
 package com.uh635c.task22;
 
+import com.uh635c.task22.controller.TagController;
 import com.uh635c.task22.model.Post;
 import com.uh635c.task22.model.PostStatus;
 import com.uh635c.task22.model.Tag;
 import com.uh635c.task22.model.Writer;
 import com.uh635c.task22.repository.*;
+import com.uh635c.task22.view.MainView;
+import com.uh635c.task22.view.TagView;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static java.lang.Long.parseLong;
+
 public class Application {
+
     public static void main(String[] args) {
-        TagRepository tagRepository = new TagRepositoryImpl();
-        PostRepository postRepository = new PostRepositoryImpl();
-        WriterRepository writerRepository = new WriterRepositoryImpl();
 
-        System.out.println(writerRepository.getById(2L));
+        MainView mainView = new MainView();
+        mainView.showStartApplication();
 
-        Writer writer = new Writer();
-        writer.setId(4L);
-        writer.setName("writer4");
+
+
+//        TagRepository tagRepository = new TagRepositoryImpl();
+//        PostRepository postRepository = new PostRepositoryImpl();
+//        WriterRepository writerRepository = new WriterRepositoryImpl();
+//
+//        System.out.println(writerRepository.getById(2L));
+//
+//        Writer writer = new Writer();
+//        writer.setId(4L);
+//        writer.setName("writer4");
 //        writerRepository.save(writer);
 
-        writer.setName("writer4 updated");
+//        writer.setName("writer4 updated");
 //        writerRepository.update(writer);
 
-        writerRepository.remove(4L);
+//        writerRepository.remove(4L);
 
 //        System.out.println(postRepository.getAll());
 //        System.out.println(postRepository.getById(1L));
