@@ -20,8 +20,10 @@ public class Application {
 
     public static void main(String[] args) {
 
-        MainView mainView = new MainView();
-        mainView.showStartApplication();
+//        MainView mainView = new MainView();
+//        mainView.showStartApplication();
+
+        List<Tag> tags = new ArrayList<>();
 
 
 

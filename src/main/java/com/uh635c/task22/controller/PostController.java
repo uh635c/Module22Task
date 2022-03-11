@@ -4,6 +4,7 @@ import com.uh635c.task22.model.Post;
 import com.uh635c.task22.model.PostStatus;
 import com.uh635c.task22.model.Tag;
 import com.uh635c.task22.model.Writer;
+import com.uh635c.task22.repository.jdbc.JdbcPostRepositoryImpl;
 import com.uh635c.task22.service.PostService;
 import com.uh635c.task22.service.TagService;
 import com.uh635c.task22.service.WriterService;
@@ -16,7 +17,7 @@ import java.util.Objects;
 import static java.lang.Long.parseLong;
 
 public class PostController {
-    PostService postService = new PostService();
+    private PostService postService = new PostService(new JdbcPostRepositoryImpl());
 
     private Long getMaxId(){
         Post post = postService.getAll().stream().max(Comparator.comparing(Post::getId)).orElse(null);

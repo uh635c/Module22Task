@@ -1,37 +1,36 @@
-package com.uh635c.task22.repository;
+package com.uh635c.task22.repository.jdbc;
 
-import com.uh635c.task22.model.Post;
-import com.uh635c.task22.model.PostStatus;
-import com.uh635c.task22.model.Tag;
-import com.uh635c.task22.model.Writer;
-
+import com.uh635c.task22.model.*;
+import com.uh635c.task22.repository.*;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
-public class PostRepositoryImpl implements PostRepository {
+public class JdbcPostRepositoryImpl implements PostRepository {
+
+    private Post getPostFromResultSet(ResultSet resultSet) throws SQLException {
+        Post post = new Post();
+        post.setId(resultSet.getLong("id"));
+        post.setContent(resultSet.getString("content"));
+
+        if (resultSet.getString("tag_status").equals("ACTIVE")) {
+            post.setStatus(PostStatus.ACTIVE);
+        } else {
+            post.setStatus(PostStatus.DELETED);
+        }
+        return post;
+    }
 
     @Override
     public List<Post> getAll() {
         List<Post> posts = new ArrayList<>();
         String sql = "SELECT * FROM Posts";
 
-        try (Statement statement = ConnectionDB.getConnection().createStatement();
-             ResultSet resultSet = statement.executeQuery(sql)) {
+        try (PreparedStatement statement = ConnectionDB.getPreparedStatement(sql);
+             ResultSet resultSet = statement.executeQuery()) {
 
             while (resultSet.next()) {
-                Post post = new Post();
-                post.setId(resultSet.getLong("id"));
-                post.setContent(resultSet.getString("content"));
-
-                if (resultSet.getString("tag_status").equals("ACTIVE")) {
-                    post.setStatus(PostStatus.ACTIVE);
-                } else {
-                    post.setStatus(PostStatus.DELETED);
-                }
-
-                posts.add(post);
+                posts.add(getPostFromResultSet(resultSet));
             }
 
         } catch (SQLException throwable) {
@@ -43,30 +42,23 @@ public class PostRepositoryImpl implements PostRepository {
 
     @Override
     public Post getById(Long id) {
-        Post post = new Post();
+        Post post = null;
         List<Tag> tags = new ArrayList<>();
-        String sql = "Select p.id AS post_id, p.content AS content, p.tag_status AS status, t.id AS tag_id, t.name AS tag_name, p.writer_id AS writer_id " +
+        String sql = "Select p.id AS id, p.content AS content, p.tag_status, t.id AS tag_id, t.name AS tag_name, p.writer_id AS writer_id " +
                 "FROM posts AS p JOIN posts_tags AS ps ON p.id=ps.post_id " +
                 "JOIN tags AS t ON ps.tag_id=t.id " +
                 "WHERE p.id = ?";
 
-        try (PreparedStatement preparedStatement = ConnectionDB.getConnection().prepareStatement(sql)) {
+        try (PreparedStatement preparedStatement = ConnectionDB.getPreparedStatement(sql)) {
             preparedStatement.setLong(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
 
             resultSet.next();
-            post.setId(resultSet.getLong("post_id"));
-            post.setContent(resultSet.getString("content"));
+            post = getPostFromResultSet(resultSet);
 
             Writer writer = new Writer();
             writer.setId(resultSet.getLong("writer_id"));
             post.setWriter(writer);
-
-            if (resultSet.getString("status").equals("ACTIVE")) {
-                post.setStatus(PostStatus.ACTIVE);
-            } else {
-                post.setStatus(PostStatus.DELETED);
-            }
 
             do {
                 Tag tag = new Tag();
@@ -88,7 +80,7 @@ public class PostRepositoryImpl implements PostRepository {
         String sql = "INSERT INTO posts (id, content, writer_id, tag_status) VALUES (?,?,?,?)";
 
         try{
-            PreparedStatement preparedStatement = ConnectionDB.getConnection().prepareStatement(sql);
+            PreparedStatement preparedStatement = ConnectionDB.getPreparedStatement(sql);
 
             //filling post table
             preparedStatement.setLong(1, post.getId());
@@ -100,7 +92,7 @@ public class PostRepositoryImpl implements PostRepository {
 
             //filling posts-tags table
             sql = "INSERT INTO posts_tags (post_id, tag_id) VALUES (?,?)";
-            preparedStatement = ConnectionDB.getConnection().prepareStatement(sql);
+            preparedStatement = ConnectionDB.getPreparedStatement(sql);
             preparedStatement.setLong(1,post.getId());
 
             for(Tag tag : post.getTags()){
@@ -122,7 +114,7 @@ public class PostRepositoryImpl implements PostRepository {
         String sql = "UPDATE posts SET content = ?, writer_id = ?, tag_status = ? WHERE id = ?";
 
         try{
-            PreparedStatement preparedStatement = ConnectionDB.getConnection().prepareStatement(sql);
+            PreparedStatement preparedStatement = ConnectionDB.getPreparedStatement(sql);
 
             //filling post table
             preparedStatement.setLong(4, post.getId());
@@ -133,7 +125,7 @@ public class PostRepositoryImpl implements PostRepository {
             preparedStatement.close();
 
             //deleting rows in the table posts-tags where id is the id of the updated post
-            preparedStatement = ConnectionDB.getConnection().prepareStatement(
+            preparedStatement = ConnectionDB.getPreparedStatement(
                     "DELETE FROM posts_tags WHERE post_id = ?");
             preparedStatement.setLong(1, post.getId());
             preparedStatement.executeUpdate();
@@ -141,7 +133,7 @@ public class PostRepositoryImpl implements PostRepository {
 
             //filling posts-tags table
             sql = "INSERT INTO posts_tags (post_id, tag_id) VALUES (?,?)";
-            preparedStatement = ConnectionDB.getConnection().prepareStatement(sql);
+            preparedStatement = ConnectionDB.getPreparedStatement(sql);
             preparedStatement.setLong(1,post.getId());
 
             for(Tag tag : post.getTags()){
@@ -162,7 +154,7 @@ public class PostRepositoryImpl implements PostRepository {
     public void remove(Long id) {
         String sql = "DELETE FROM posts WHERE id = ?";
 
-        try(PreparedStatement preparedStatement = ConnectionDB.getConnection().prepareStatement(sql)) {
+        try(PreparedStatement preparedStatement = ConnectionDB.getPreparedStatement(sql)) {
             preparedStatement.setLong(1, id);
             preparedStatement.executeUpdate();
 

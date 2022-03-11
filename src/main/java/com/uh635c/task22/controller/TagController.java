@@ -1,6 +1,7 @@
 package com.uh635c.task22.controller;
 
 import com.uh635c.task22.model.Tag;
+import com.uh635c.task22.repository.jdbc.JdbcTagRepositoryImpl;
 import com.uh635c.task22.service.TagService;
 
 import java.util.Comparator;
@@ -10,7 +11,7 @@ import java.util.Objects;
 import static java.lang.Long.parseLong;
 
 public class TagController {
-    TagService tagService = new TagService();
+    TagService tagService = new TagService(new JdbcTagRepositoryImpl());
 
     private Long getMaxId(){
         Tag tag = tagService.getAll().stream().max(Comparator.comparing(t -> t.getId())).orElse(null);

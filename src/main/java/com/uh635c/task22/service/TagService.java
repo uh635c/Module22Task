@@ -2,12 +2,16 @@ package com.uh635c.task22.service;
 
 import com.uh635c.task22.model.Tag;
 import com.uh635c.task22.repository.TagRepository;
-import com.uh635c.task22.repository.TagRepositoryImpl;
+import com.uh635c.task22.repository.jdbc.JdbcTagRepositoryImpl;
 
 import java.util.List;
 
 public class TagService {
-    private TagRepository tagRepository = new TagRepositoryImpl();
+    private TagRepository tagRepository;
+
+    public TagService(TagRepository tagRepository) {
+        this.tagRepository = tagRepository;
+    }
 
     public List<Tag> getAll(){
         return tagRepository.getAll();

@@ -2,12 +2,16 @@ package com.uh635c.task22.service;
 
 import com.uh635c.task22.model.Post;
 import com.uh635c.task22.repository.PostRepository;
-import com.uh635c.task22.repository.PostRepositoryImpl;
+import com.uh635c.task22.repository.jdbc.JdbcPostRepositoryImpl;
 
 import java.util.List;
 
 public class PostService {
-    private PostRepository postRepository = new PostRepositoryImpl();
+    private PostRepository postRepository;
+
+    public PostService(PostRepository postRepository) {
+        this.postRepository = postRepository;
+    }
 
     public List<Post> getAll(){
         return postRepository.getAll();

@@ -2,6 +2,7 @@ package com.uh635c.task22.controller;
 
 import com.uh635c.task22.model.Post;
 import com.uh635c.task22.model.Writer;
+import com.uh635c.task22.repository.jdbc.JdbcWriterRepositoryImpl;
 import com.uh635c.task22.service.WriterService;
 
 import java.util.ArrayList;
@@ -12,7 +13,7 @@ import java.util.Objects;
 import static java.lang.Long.parseLong;
 
 public class WriterController {
-    WriterService writerService = new WriterService();
+    WriterService writerService = new WriterService(new JdbcWriterRepositoryImpl());
 
     private Long getMaxId(){
         Writer writer = writerService.getAll().stream().max(Comparator.comparing(Writer::getId)).orElse(null);

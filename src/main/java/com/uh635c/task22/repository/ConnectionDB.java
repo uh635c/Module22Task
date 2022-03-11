@@ -17,7 +17,7 @@ public class ConnectionDB {
         }
     }
 
-    public static Connection getConnection(){
+    public static PreparedStatement getPreparedStatement(String sql) throws SQLException {
         if( connection == null){
             synchronized (ConnectionDB.class){
                 if(connection == null){
@@ -25,6 +25,6 @@ public class ConnectionDB {
                 }
             }
         }
-        return connection;
+        return connection.prepareStatement(sql);
     }
 }
