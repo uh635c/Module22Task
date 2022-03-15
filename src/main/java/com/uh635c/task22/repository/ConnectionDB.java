@@ -17,7 +17,7 @@ public class ConnectionDB {
         }
     }
 
-    public static PreparedStatement getPreparedStatement(String sql) throws SQLException {
+    public static Connection getConnection(){
         if( connection == null){
             synchronized (ConnectionDB.class){
                 if(connection == null){
@@ -25,6 +25,10 @@ public class ConnectionDB {
                 }
             }
         }
-        return connection.prepareStatement(sql);
+        return connection;
+    }
+
+    public static PreparedStatement getPreparedStatement(String sql) throws SQLException {
+        return getConnection().prepareStatement(sql);
     }
 }

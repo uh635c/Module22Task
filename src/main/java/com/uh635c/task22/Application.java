@@ -8,22 +8,30 @@ import com.uh635c.task22.model.Writer;
 import com.uh635c.task22.repository.*;
 import com.uh635c.task22.view.MainView;
 import com.uh635c.task22.view.TagView;
+import liquibase.Contexts;
+import liquibase.LabelExpression;
+import liquibase.database.*;
+import liquibase.database.jvm.JdbcConnection;
+import liquibase.exception.DatabaseException;
+import liquibase.exception.LiquibaseException;
+import liquibase.resource.ClassLoaderResourceAccessor;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
 import static java.lang.Long.parseLong;
 
 public class Application {
 
     public static void main(String[] args) {
 
-//        MainView mainView = new MainView();
-//        mainView.showStartApplication();
+        LiquibaseDbPrepare.prepareDB();
 
-        List<Tag> tags = new ArrayList<>();
+        MainView mainView = new MainView();
+        mainView.showStartApplication();
+
+//        List<Tag> tags = new ArrayList<>();
 
 
 

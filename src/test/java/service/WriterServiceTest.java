@@ -1,9 +1,7 @@
 package service;
 
 import com.uh635c.task22.model.Writer;
-import com.uh635c.task22.repository.PostRepository;
 import com.uh635c.task22.repository.WriterRepository;
-import com.uh635c.task22.service.PostService;
 import com.uh635c.task22.service.WriterService;
 import org.junit.Assert;
 import org.junit.BeforeClass;
